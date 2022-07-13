@@ -28,3 +28,5 @@ if (isset($_POST['updateUser'])) {
     echo 'User with the same username or email already email';
   }
 }
+
+

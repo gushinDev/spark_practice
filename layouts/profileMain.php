@@ -6,15 +6,23 @@ if (!$user) {
   echo "User not found";
   die;
 }
+
+$userImg = !empty($user['img']) ? $user['img'] : 'default.jpg';
+
 ?>
 
 <p>Username: <?= $user['username'] ?></p>
 <p>Email: <?= $user['email'] ?></p>
 <p>ID: <?= $user['user_id'] ?></p>
-
-<form action="/" method="POST" enctype="multipart/form-data">
+<img src="../img/<?= $userImg ?>" alt="img" width="200px">
+<br>
+<br>
+<br>
+<form action="<?= $_SERVER['PHP_SELF'] ?>" method="POST" enctype="multipart/form-data">
 
   <input type="file" name="image">
-  <button type="submit">Save new photo</button>
+  <br>
+  <br>
+  <button type="submit" name="changeProfile">Save new photo</button>
 
 </form>
