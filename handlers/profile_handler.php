@@ -1,5 +1,5 @@
 <?php
-if (isset($_POST['changeProfile'])) {
+if (isset($_POST['setAvatar'])) {
 
   $filename = $_FILES['image']['name'];
   $tempName = $_FILES['image']['tmp_name'];
@@ -44,3 +44,12 @@ if (isset($_POST['changeProfile'])) {
   }
   echo '<br>';
 }
+
+
+if(isset($_POST['deleteAvatar'])) {
+  $sql = 'UPDATE users SET img = null WHERE user_id = :user_id';
+  $stmt = $pdo->prepare($sql);
+  $stmt->execute(['user_id' => $_SESSION['user_id']]);
+  unlink($_POST['fileName']);
+}
+

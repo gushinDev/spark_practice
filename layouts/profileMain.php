@@ -7,7 +7,7 @@ if (!$user) {
   die;
 }
 
-$userImg = !empty($user['img']) ? $user['img'] : 'default.jpg';
+$userImg = !empty($user['img']) ? $user['img'] : 'default.png';
 
 ?>
 
@@ -19,10 +19,14 @@ $userImg = !empty($user['img']) ? $user['img'] : 'default.jpg';
 <br>
 <br>
 <form action="<?= $_SERVER['PHP_SELF'] ?>" method="POST" enctype="multipart/form-data">
-
   <input type="file" name="image">
   <br>
   <br>
-  <button type="submit" name="changeProfile">Save new photo</button>
+  <button type="submit" name="setAvatar">Set new avatar</button>
+</form>
 
+
+<form action="<?= $_SERVER['PHP_SELF'] ?>" method="POST" enctype="multipart/form-data">
+  <input type="hidden" name="fileName" value="../img/<?= $userImg ?>">
+  <button type="submit" name="deleteAvatar">Delete avatar</button>
 </form>
