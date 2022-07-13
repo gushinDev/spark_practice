@@ -4,7 +4,7 @@
     <form method="POST" action="<?= $_SERVER['PHP_SELF'] ?>">
       <!-- Email input -->
       <div class="form-outline mb-4">
-        <input type="text" id="form2Example1" class="form-control" name="username" value="<?= $_SESSION['username'] ?? ''; ?>">
+        <input type="text" id="form2Example1" class="form-control" name="username" value="<?= $_SESSION['loginData']['username'] ?? ''; ?>">
         <label class="form-label" for="form2Example1">Username</label>
       </div>
 

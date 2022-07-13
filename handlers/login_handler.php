@@ -35,7 +35,6 @@ if (isset($_POST['submit'])) {
       $_SESSION['role'] = $user['role'];
       $_SESSION['user_id'] = $user['user_id'];
       unset($_SESSION['loginData']);
-      
       header('Location: profile.php');
     }
 
