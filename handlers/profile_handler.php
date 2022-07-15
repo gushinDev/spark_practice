@@ -24,7 +24,6 @@ if (isset($_POST['setAvatar'])) {
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['img' => $updatedFileName, 'user_id' => $_SESSION['user_id']]);
 
-
     if (move_uploaded_file($validationImage->getTempName(), $path)) {
       header("Location: " . $_SERVER['PHP_SELF']);
       die();
@@ -52,4 +51,11 @@ if (!$user) {
   echo "User not found";
   die;
 }
-$userImg = !empty($user['img']) ? $user['img'] : 'default.png';
+
+$userImg = $user['img'];
+
+if (empty($user['img']) || !file_exists("../img/{$user['img']}")) {
+  $userImg = 'default.png';
+}
+
+// $userImg = !empty($user['img']) ? $user['img'] : 'default.png';
