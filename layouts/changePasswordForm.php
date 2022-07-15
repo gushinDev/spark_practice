@@ -15,4 +15,4 @@
   <button type="submit" name="changePassword">Change</button>
 </form>
 
-<a href="updateUser.php?update&user_id=<?= $_GET['user_id'] ?? 'users.php' ?>" style="font-size:20px">Go back</a>
+<a href="updateUser.php?update&user_id=<?= $_GET['user_id'] ??  $_SESSION['changePassword']['user_id'] ?>" style="font-size:20px">Go back</a>

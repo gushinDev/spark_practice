@@ -9,22 +9,6 @@ $usersOnPage = 15;
 $currentPage = $_GET['page'] ?? '1';
 $pagination = preparePagination($pdo, $usersOnPage, $currentPage);
 
-
-if (isset($_POST['deleteUser'])) {
-
-  // if(!$_SESSION['user_id'] == $_POST['user_id']) {
-  deleteUser($pdo, $_POST['user_id']);
-  // }
-
-
-  if ($_SESSION['user_id'] == $_POST['user_id']) {
-    $_SESSION = [];
-    header('Location: users.php');
-  } else {
-    header('Location: users.php');
-  }
-}
-
 if (!isset($_GET['page'])) {
   header("Location: ?page={$pagination['pageStart']}");
 }

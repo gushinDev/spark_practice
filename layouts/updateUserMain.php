@@ -21,8 +21,8 @@
     <div class="form-group">
       <label for="role">Role</label>
       <select name="role" id="role">
-        <option value="admin" <?= $_SESSION['role'] == 'admin' ? 'selected' : '' ?>>Admin</option>
         <option value="user">User</option>
+        <option value="admin" <?= $_SESSION['updateUserForm']['role'] == 'admin' ? 'selected' : '' ?>>Admin</option>
       </select>
     </div>
     <br>

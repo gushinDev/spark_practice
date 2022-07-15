@@ -2,6 +2,7 @@
 if (isset($_GET['user_id'])) {
   $userId = $_GET['user_id'];
   $user = findUserById($pdo, $userId);
+  
   if (!$user) {
     echo 'user not found';
     die();
@@ -12,7 +13,8 @@ if (isset($_GET['user_id'])) {
       'user_id'   => $user['user_id'],
       'username'  => $user['username'],
       'email'     => $user['email'],
-      'img'       => $user['img']
+      'img'       => $user['img'],
+      'role'      => $user['role']
     ];
 }
 
@@ -26,7 +28,6 @@ if (isset($_POST['updateUser'])) {
 
   if (!$errors) {
     if (updateUser($pdo)) {
-      die(print_r($_SESSION));
       unset($_SESSION['updateUserForm']);
       header('Location: users.php');
     }
