@@ -1,4 +1,10 @@
 <?php
+
+if (!isset($_SESSION['username'])) {
+  header('Location: login.php');
+  die();
+}
+
 $usersOnPage = 15;
 $currentPage = $_GET['page'] ?? '1';
 $pagination = preparePagination($pdo, $usersOnPage, $currentPage);
@@ -6,7 +12,10 @@ $pagination = preparePagination($pdo, $usersOnPage, $currentPage);
 
 if (isset($_POST['deleteUser'])) {
 
+  // if(!$_SESSION['user_id'] == $_POST['user_id']) {
   deleteUser($pdo, $_POST['user_id']);
+  // }
+
 
   if ($_SESSION['user_id'] == $_POST['user_id']) {
     $_SESSION = [];
@@ -33,4 +42,3 @@ if (isset($_SESSION['role']) && $_SESSION['role'] == 'admin') : ?>
     <button type="submit" style="font-size:25px">Create new</button>
   </form>
 <?php endif; ?>
-

@@ -1,7 +1,7 @@
 <?php
 
 if (isset($_SESSION['user_id'])) {
-  header("location: /admin");
+  header("location: profile.php");
 }
 
 if (isset($_GET['success'])) {
@@ -21,10 +21,7 @@ if (isset($_POST['submit'])) {
 
   $validation = new Validation($_POST);
   $errors = $validation->validateLoginForm();
-
-  foreach ($errors as $error) {
-    echo $error;
-  }
+  $validation->showValidationErrors();
 
   if (!$errors) {
 

@@ -3,7 +3,6 @@ class ValidationImage
 {
   private $filename;
   private $tempName;
-  // private $fileSize;
   private $extension;
   private $errors = [];
 
@@ -11,7 +10,6 @@ class ValidationImage
   {
     $this->filename = $uploadedFile['image']['name'];
     $this->tempName = $uploadedFile['image']['tmp_name'];
-    // $this->fileSize = $uploadedFile['image']['size'];
     $this->extension = strToLower(pathinfo($this->filename, PATHINFO_EXTENSION));
   }
 
@@ -19,7 +17,7 @@ class ValidationImage
   {
     return $this->tempName;
   }
-  
+
   public function getExtension()
   {
     return $this->extension;
@@ -55,7 +53,7 @@ class ValidationImage
     if ($this->errors) return;
 
     if ($this->extension != "jpg" && $this->extension != "png" && $this->extension != "jpeg") {
-      $errors[] = 'Format of your file doesn\'t support';
+      $errors[] = 'Extension of your file doesn\'t support';
     }
   }
 }

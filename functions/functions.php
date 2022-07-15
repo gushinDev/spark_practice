@@ -22,25 +22,18 @@ function preparePagination($pdo, $numRows, $currentPage)
 function findAllUsers($pdo, int $pageNumber = 1)
 {
   $nubmerOfUsersOnOnePage = 15;
-  $stmt = $pdo->prepare('select count(*) from users;');
-  $quantityOfUsers = $stmt->execute();
-  $quantityOfUsers = $stmt->fetch();
-  $num = $quantityOfUsers['count(*)'];
+  // $stmt = $pdo->prepare('select count(*) from users;');
   $startRowPosition = ($pageNumber - 1) * $nubmerOfUsersOnOnePage;
-  $nuberOfDisplaingRow = $nubmerOfUsersOnOnePage;
-  $stmt = $pdo->query('SELECT * FROM users WHERE deleted = false LIMIT ' . $startRowPosition . ', ' . $nubmerOfUsersOnOnePage . ';');
+  $stmt = $pdo->query('SELECT * FROM users WHERE deleted = false ORDER BY user_id DESC LIMIT ' . $startRowPosition . ', ' . $nubmerOfUsersOnOnePage . ';');
   return $stmt;
 }
 
 function checkUserAlredyExist($pdo, $userData)
 {
-
   $sql = 'SELECT user_id FROM users WHERE email = :email OR username = :username LIMIT 1';
   $stmt = $pdo->prepare($sql);
   $stmt->execute(['email' => $userData['email'], 'username' => $userData['username']]);
   return $stmt->fetch();
-  // die(var_dump($stmt->rowCount()));
-  // return $stmt->rowCount();
 }
 
 
@@ -117,13 +110,13 @@ function updatePasswordById($pdo, $user_id)
   $currentUser = findUserById($pdo, $user_id);
 
   if ($currentUser && checkPasswordMatches($_POST['password'], $currentUser['password'])) {
-
     $newUserPassword = password_hash($_POST['confirm'], PASSWORD_BCRYPT);
     $sql = 'UPDATE users SET password = :password WHERE user_id = :user_id';
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['user_id' => $user_id, 'password' => $newUserPassword]);
     return true;
   }
+
   return false;
 }
 
@@ -131,15 +124,43 @@ function updatePasswordById($pdo, $user_id)
 
 function userLogin($pdo, $username)
 {
-
-  $sql = 'SELECT * FROM users WHERE username = :username LIMIT 1';
+  $sql = 'SELECT * FROM users WHERE username = :username && deleted = false LIMIT 1 ';
   $stmt = $pdo->prepare($sql);
   $stmt->execute(['username' => $username]);
-  $result = $stmt->fetch();
-  return $result;
+  return $stmt->fetch();
 }
 
 function checkAuth()
 {
   return isset($_SESSION['user_id']);
+}
+
+function checkUserIsAdmin()
+{
+  return isset($_SESSION['role']) && $_SESSION['role'] == 'admin';
+}
+
+function checkIsCurrentUserInGet()
+{
+  return isset($_GET['user_id']) && $_SESSION['user_id'] != $_GET['user_id'];
+}
+
+function checkIsCurrentUserInPost()
+{
+  return isset($_POST['user_id']) && $_SESSION['user_id'] != $_POST['user_id'];
+}
+
+function updateSession($pdo, $userId)
+{
+  $sql = 'SELECT * FROM users WHERE user_id = :user_id';
+  $stmt = $pdo->prepare($sql);
+  $stmt->execute(['user_id' => $userId]);
+  $result = $stmt->fetch();
+  if ($result) {
+    $_SESSION[] = [
+      'username' => $result['username'],
+      'email' => $result['email'],
+      'role' => $result['role']
+    ];
+  }
 }

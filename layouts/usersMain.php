@@ -1,5 +1,3 @@
-
-
  <table class="table">
    <thead>
      <tr>
@@ -19,16 +17,18 @@
          <td><?= $row['email'] ?></td>
          <td><?= $row['role'] ?></td>
 
-         <?php if (isset($_SESSION['role']) && $_SESSION['role'] == 'admin') : ?>
+         <?php if (checkUserIsAdmin()) : ?>
            <td>
              <a href="updateUser.php?update&user_id=<?= $row['user_id'] ?>">Update</a>
            </td>
 
            <td>
-             <form action="<?= $_SERVER['PHP_SELF'] ?>" method="post">
-               <input type="hidden" name="user_id" value="<?= $row['user_id'] ?>" />
-               <button type="submit" name="deleteUser">Delete</button>
-             </form>
+             <?php if ($_SESSION['user_id'] != $row['user_id']) : ?>
+               <form action="<?= $_SERVER['PHP_SELF'] ?>" method="post">
+                 <input type="hidden" name="user_id" value="<?= $row['user_id'] ?>" />
+                 <button type="submit" name="deleteUser">Delete</button>
+               </form>
+             <?php endif; ?>
            </td>
          <?php endif; ?>
        </tr>

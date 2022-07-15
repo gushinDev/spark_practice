@@ -1,4 +1,9 @@
 <?php
+if (!isset($_SESSION['username'])) {
+  header('Location: login.php');
+  die;
+}
+
 if (isset($_POST['setAvatar'])) {
 
   $validationImage = new ValidationImage($_FILES);
@@ -41,3 +46,10 @@ if (isset($_POST['deleteAvatar'])) {
     unlink($_POST['fileName']);
   }
 }
+
+$user = findUserById($pdo, $_SESSION['user_id']);
+if (!$user) {
+  echo "User not found";
+  die;
+}
+$userImg = !empty($user['img']) ? $user['img'] : 'default.png';

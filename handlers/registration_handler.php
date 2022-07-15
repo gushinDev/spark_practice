@@ -12,10 +12,7 @@ if (isset($_POST['submit'])) {
 
   $validation = new Validation($_POST);
   $errors = $validation->validateRegistrationForm();
-
-  foreach ($errors as $error) {
-    echo $error;
-  }
+  $validation->showValidationErrors();
 
   if (!$errors) {
     if (createNewUser($pdo, $_SESSION['registration'])) {

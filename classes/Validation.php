@@ -10,6 +10,14 @@ class Validation
     $this->formData = $post_data;
   }
 
+  public function showValidationErrors()
+  {
+    $this->errors = array_unique($this->errors);
+    foreach ($this->errors as $error) {
+      echo $error;
+    }
+  }
+
   public function validateRegistrationForm()
   {
     $this->validateUsername();
@@ -21,8 +29,9 @@ class Validation
 
   public function validateLoginForm()
   {
-    $this->validateUsername();
-    $this->validatePassword();
+    $safeMessage = true;
+    $this->validateUsername($safeMessage);
+    $this->validatePassword($safeMessage);
     return $this->errors;
   }
 
@@ -40,7 +49,7 @@ class Validation
     return $this->errors;
   }
 
-  private function validateUsername()
+  private function validateUsername($safeMessage = false)
   {
     $username = trim($this->formData['username']);
 
@@ -48,7 +57,8 @@ class Validation
       $this->addError('username', 'username cannot be empty <br>');
     } else {
       if (!preg_match('/^[a-zA-Z0-9]{6,15}$/', $username)) {
-        $this->addError('username', 'username must be 6-12 chars & alphanumeric <br>');
+        $errorMessage = $safeMessage ? 'Wrong username or password' : 'username must be 6-12 chars & alphanumeric';
+        $this->addError('username', $errorMessage . '<br>');
       }
     }
   }
@@ -75,10 +85,10 @@ class Validation
     }
   }
 
-  private function validatePassword()
+  private function validatePassword($safeMessage = false)
   {
     $password = trim($this->formData['password']);
-    $this->passwordValidation($password);
+    $this->passwordValidation($password, $safeMessage);
   }
 
   private function validateNewPassword()
@@ -87,7 +97,7 @@ class Validation
     $this->passwordValidation($password);
   }
 
-  private function passwordValidation($password)
+  private function passwordValidation($password, $safeMessage = false)
   {
     switch (true) {
       case empty($password):
@@ -95,7 +105,8 @@ class Validation
         break;
 
       case (!preg_match('/^.{6,15}$/', $password)):
-        $this->addError('password', 'password must be 6-15 chars & alphanumeric <br>');
+        $errorMessage = $safeMessage ? 'Wrong username or password' : 'password must be 6-15 chars & alphanumeric';
+        $this->addError('password', $errorMessage . '<br>');
         break;
     }
   }
