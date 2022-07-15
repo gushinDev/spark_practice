@@ -39,17 +39,16 @@ if (isset($_POST['setAvatar'])) {
 
 if (isset($_POST['deleteAvatar'])) {
   if ($_POST['fileName'] != '../img/default.png') {
-    $sql = 'UPDATE users SET img = null WHERE user_id = :user_id';
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute(['user_id' => $_SESSION['user_id']]);
+    deleteAvatar($pdo);
     unlink($_POST['fileName']);
   }
 }
 
 $user = findUserById($pdo, $_SESSION['user_id']);
+
 if (!$user) {
   echo "User not found";
-  die;
+  die();
 }
 
 $userImg = $user['img'];
@@ -58,4 +57,3 @@ if (empty($user['img']) || !file_exists("../img/{$user['img']}")) {
   $userImg = 'default.png';
 }
 
-// $userImg = !empty($user['img']) ? $user['img'] : 'default.png';

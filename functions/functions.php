@@ -164,3 +164,9 @@ function updateSession($pdo, $userId)
     ];
   }
 }
+
+function deleteAvatar($pdo) {
+  $sql = 'UPDATE users SET img = null WHERE user_id = :user_id';
+  $stmt = $pdo->prepare($sql);
+  $stmt->execute(['user_id' => $_SESSION['user_id']]);
+}
