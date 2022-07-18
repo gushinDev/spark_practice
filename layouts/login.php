@@ -1,7 +1,7 @@
 <h1 class="header text-center">Login</h1>
 <div class="row" style="max-width: 50%; margin: 0 auto; margin-top: 50px">
   <div class="col-12">
-    <form method="POST" action="<?= $_SERVER['PHP_SELF'] ?>">
+    <form method="POST" action="login">
       <!-- Email input -->
       <div class="form-outline mb-4">
         <input type="text" id="form2Example1" class="form-control" name="username" value="<?= $_SESSION['loginData']['username'] ?? ''; ?>">

@@ -3,12 +3,12 @@
 if (
   (!checkUserIsAdmin() && checkIsCurrentUserInGet()) || (!checkUserIsAdmin() && checkIsCurrentUserInPost())
 ) {
-  header('Location: users.php');
+  header('Location: users');
   die();
 }
 
 if (!checkAuth()) {
-  header('Location: index.php');
+  header('Location: login');
   die();
 }
 
@@ -21,7 +21,7 @@ if (isset($_POST['changePassword'])) {
   if (!$errors) {
     if (updatePasswordById($pdo, $_POST['user_id'])) {
       unset($_SESSION['changePassword']);
-      header('Location: users.php');
+      header('Location: /users');
       die();
     }
     echo 'Wrong current password';

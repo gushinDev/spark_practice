@@ -85,16 +85,23 @@ function updateUser($pdo)
     'role' => $_POST['role'] ?? 'user'
   ];
 
-  $sql = 'UPDATE users SET username = :username, email = :email, role = :role WHERE user_id = :user_id';
-
-  $stmt = $pdo->prepare($sql);
-  try {
+  if (!checkUserExist($pdo, $userPostData)) {
+    $sql = 'UPDATE users SET username = :username, email = :email, role = :role WHERE user_id = :user_id';
+    $stmt = $pdo->prepare($sql);
     $stmt->execute($userPostData);
     $stmt->fetch();
     return true;
-  } catch (PDOException $e) {
-    return true;
   }
+  return false;
+}
+
+function checkUserExist($pdo, $userPostData)
+{
+  unset($userPostData['role']);
+  $sql = 'SELECT user_id FROM users WHERE (username = :username || email = :email) && user_id != :user_id';
+  $stmt = $pdo->prepare($sql);
+  $stmt->execute($userPostData);
+  return $stmt->fetch();
 }
 
 function checkPasswordMatches($inputPassword, $dbUserPassword)
@@ -119,8 +126,6 @@ function updatePasswordById($pdo, $user_id)
 
   return false;
 }
-
-
 
 function userLogin($pdo, $username)
 {
@@ -165,7 +170,8 @@ function updateSession($pdo, $userId)
   }
 }
 
-function deleteAvatar($pdo) {
+function deleteAvatar($pdo)
+{
   $sql = 'UPDATE users SET img = null WHERE user_id = :user_id';
   $stmt = $pdo->prepare($sql);
   $stmt->execute(['user_id' => $_SESSION['user_id']]);

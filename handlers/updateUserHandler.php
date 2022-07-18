@@ -29,8 +29,8 @@ if (isset($_POST['updateUser'])) {
   if (!$errors) {
     if (updateUser($pdo)) {
       unset($_SESSION['updateUserForm']);
-      header('Location: users.php');
+      header('Location: /users');
     }
-    echo 'User with the same username or email already email';
+    echo 'User with the same username or email already exist';
   }
 }

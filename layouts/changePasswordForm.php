@@ -1,4 +1,4 @@
-<form action="<?= $_SERVER['PHP_SELF'] ?>" method='POST'>
+<form action="/users/<?= $_SESSION['changePassword']['user_id'] ?>/change_password" method='POST'>
 
   <input type="hidden" name="user_id" value="<?= $_SESSION['changePassword']['user_id'] ?? '' ?>" />
 
@@ -15,4 +15,4 @@
   <button type="submit" name="changePassword">Change</button>
 </form>
 
-<a href="updateUser.php?update&user_id=<?= $_GET['user_id'] ??  $_SESSION['changePassword']['user_id'] ?>" style="font-size:20px">Go back</a>
+<a href="<?= $_SERVER['HTTP_REFERER'] ?>" style="font-size:20px">Go back</a>

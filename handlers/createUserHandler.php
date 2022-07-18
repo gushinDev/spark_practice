@@ -1,27 +1,27 @@
 <?php
 
 if (!$_SESSION) {
-  header('Location: login.php');
+  header('Location: login');
   die();
 }
 if (!checkAuth() || $_SESSION['role'] != 'admin') {
-  header('Location: login.php');
+  header('Location: login');
   die();
 }
 
 if (checkIsCurrentUserInPost() && checkIsCurrentUserInGet()) {
-  header('Location: login.php');
+  header('Location: login');
   die();
 }
 
 
 if (isset($_SESSION['role']) && $_SESSION['role'] != 'admin') {
-  header('Location: users.php');
+  header('Location: users');
   die();
 }
 
 if (!checkAuth()) {
-  header('Location: index.php');
+  header('Location: login');
   die();
 }
 
@@ -37,7 +37,7 @@ if (isset($_POST['create'])) {
   if (!$errors) {
     if (createNewUser($pdo, $_POST)) {
       unset($_SESSION['createUserForm']);
-      header('Location: users.php');
+      header('Location: /users');
       die();
     };
     echo 'User already exist';

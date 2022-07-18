@@ -1,7 +1,7 @@
 <?php
 
 if (isset($_SESSION['user_id'])) {
-  header("location: profile.php");
+  header("location: profile");
 }
 
 if (isset($_GET['success'])) {
@@ -9,9 +9,10 @@ if (isset($_GET['success'])) {
   echo 'Success registration, now you can login';
 }
 
+
 if (isset($_GET['logout'])) {
   $_SESSION = [];
-  header('Location: ' . $_SERVER['PHP_SELF']);
+  header('Location: login');
 }
 
 if (isset($_POST['submit'])) {
@@ -24,7 +25,6 @@ if (isset($_POST['submit'])) {
   $validation->showValidationErrors();
 
   if (!$errors) {
-
     $user = userLogin($pdo, $_SESSION['loginData']['username']);
 
     if ($user && checkPasswordMatches($postPassword, $user['password'])) {
@@ -32,9 +32,8 @@ if (isset($_POST['submit'])) {
       $_SESSION['role'] = $user['role'];
       $_SESSION['user_id'] = $user['user_id'];
       unset($_SESSION['loginData']);
-      header('Location: profile.php');
+      header('Location: profile');
     }
-
     echo 'Wrong username or password';
   }
 }

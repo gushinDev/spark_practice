@@ -1,7 +1,7 @@
 <?php
 
 if (isset($_SESSION['user_id'])) {
-  header("location: index.php"); 
+  header("location: profile");
 }
 
 if (isset($_POST['submit'])) {
@@ -16,9 +16,9 @@ if (isset($_POST['submit'])) {
 
   if (!$errors) {
     if (createNewUser($pdo, $_SESSION['registration'])) {
-      header('Location: ./login.php?success');
+      header('Location: login?success');
     }
-
     echo 'User already exist';
   }
+
 }

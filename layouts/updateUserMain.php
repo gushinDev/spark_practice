@@ -1,8 +1,8 @@
 <h1 class="text-center">Update user</h1>
 
-<img src="../img/<?= $_SESSION['updateUserForm']['img'] ?? 'default.png' ?>" alt="">
+<img src="/img/<?= $_SESSION['updateUserForm']['img'] ?? 'default.png'?>" alt="" width="250px">
 
-<form method="POST" action="<?= $_SERVER['PHP_SELF'] ?>">
+<form method="POST" action="/users/<?=$_SESSION['updateUserForm']['user_id']?>/update">
   <input type="hidden" name="user_id" value="<?= $_SESSION['updateUserForm']['user_id'] ?? '' ?>" />
 
   <div class="form-group">
@@ -28,7 +28,7 @@
     <br>
   <?php endif; ?>
 
-  <a href="changePassword.php?user_id=<?= $_SESSION['updateUserForm']['user_id'] ?? '' ?>">Change password</a>
+  <a href="/users/<?= $_SESSION['updateUserForm']['user_id'] ?? '' ?>/change_password">Change password</a>
 
   <br>
   <br>
@@ -40,6 +40,6 @@
 <br>
 <br>
 
-<h2 class="text-center"><a href="users.php">Go back</a></h2>
+<h2 class="text-center"><a href="<?= $_SERVER['HTTP_REFERER']?>">Go back</a></h2>
 
 </div>

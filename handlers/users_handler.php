@@ -1,8 +1,20 @@
 <?php
 
 if (!isset($_SESSION['username'])) {
-  header('Location: login.php');
+  header('Location: login');
   die();
+}
+
+if (isset($_POST['deleteUser'])) {
+
+  if ($_SESSION['role'] != 'admin') {
+    header('Location: ' . $_SERVER['HTTP_REFERER']);
+  }
+
+  if ($_SESSION['user_id'] != $_POST['user_id']) {
+    deleteUser($pdo, $_POST['user_id']);
+  }
+
 }
 
 $usersOnPage = 15;
@@ -21,8 +33,3 @@ if (isset($_GET['page']) && $_GET['page'] > $pagination['pageEnd']) {
   header("Location: ?page={$pagination['pageEnd']}");
 }
 
-if (isset($_SESSION['role']) && $_SESSION['role'] == 'admin') : ?>
-  <form action="createUser.php" method="POST">
-    <button type="submit" style="font-size:25px">Create new</button>
-  </form>
-<?php endif; ?>
