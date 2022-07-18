@@ -1,4 +1,4 @@
-<?php if (isset($_SESSION['role']) && $_SESSION['role'] == 'admin') : ?>
+<?php if (checkUserIsAdmin()) : ?>
     <form action="/users/create" method="POST">
         <button type="submit" style="font-size:25px">Create new</button>
     </form>
@@ -30,16 +30,6 @@
 
               <td>
                 <?php if ($_SESSION['user_id'] != $row['user_id']) : ?>
-                    <script>
-                        function deleteName(evt) {
-                            if (confirm("Вы уверены, что хотите удалить запись?")) {
-                                evt.preventDefault();
-                                window.history.back();
-                            } else {
-                                evt.submit();
-                            }
-                        }
-                    </script>
                     <form action="/users" method="post" onsubmit='deleteName(this); return false'>
                         <input type="hidden" name="user_id" value="<?= $row['user_id'] ?>"/>
                         <button type="submit" name="deleteUser">Delete</button>
@@ -61,4 +51,14 @@
     <a href="?page=<?= $pagination['currentPage'] + 1 ?>">next</a>
     <a href="?page=<?= $pagination['pageEnd'] ?>">end</a>
 </div>
+
+<script>
+    function deleteName(evt) {
+        if (confirm("Вы уверены, что хотите удалить запись?")) {
+            evt.preventDefault();
+        } else {
+            evt.submit();
+        }
+    }
+</script>
 

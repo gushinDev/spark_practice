@@ -19,6 +19,6 @@ class Router
 
   private function includeUsers() {
     include '../handlers/users_handler.php';
-    include '../layouts/usersMain.php';
+    include '../views/users.php';
   }
 }
