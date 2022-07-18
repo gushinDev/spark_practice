@@ -1,5 +1,5 @@
 <?php
-
+include '../config/config.php';
 if (!$_SESSION) {
   header('Location: login');
   die();

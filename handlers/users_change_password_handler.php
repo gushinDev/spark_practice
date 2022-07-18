@@ -1,5 +1,5 @@
 <?php
-
+include '../config/config.php';
 if (
   (!checkUserIsAdmin() && checkIsCurrentUserInGet()) || (!checkUserIsAdmin() && checkIsCurrentUserInPost())
 ) {

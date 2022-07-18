@@ -1,4 +1,5 @@
 <?php
+include '../config/config.php';
 if (isset($_GET['user_id'])) {
   $userId = $_GET['user_id'];
   $user = findUserById($pdo, $userId);

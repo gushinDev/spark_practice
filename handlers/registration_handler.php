@@ -1,5 +1,5 @@
 <?php
-
+include '../config/config.php';
 if (isset($_SESSION['user_id'])) {
   header("location: profile");
 }

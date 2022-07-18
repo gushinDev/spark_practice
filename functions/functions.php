@@ -176,3 +176,9 @@ function deleteAvatar($pdo)
   $stmt = $pdo->prepare($sql);
   $stmt->execute(['user_id' => $_SESSION['user_id']]);
 }
+
+function setLoginSession($userData) {
+  $_SESSION['username'] = $userData['username'];
+  $_SESSION['role'] = $userData['role'];
+  $_SESSION['user_id'] = $userData['user_id'];
+}

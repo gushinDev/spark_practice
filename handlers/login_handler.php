@@ -1,5 +1,5 @@
 <?php
-
+include '../config/config.php';
 if (isset($_SESSION['user_id'])) {
   header("location: profile");
 }
@@ -28,9 +28,7 @@ if (isset($_POST['submit'])) {
     $user = userLogin($pdo, $_SESSION['loginData']['username']);
 
     if ($user && checkPasswordMatches($postPassword, $user['password'])) {
-      $_SESSION['username'] = $user['username'];
-      $_SESSION['role'] = $user['role'];
-      $_SESSION['user_id'] = $user['user_id'];
+      setLoginSession($user);
       unset($_SESSION['loginData']);
       header('Location: profile');
     }

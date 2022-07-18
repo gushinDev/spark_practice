@@ -1,4 +1,5 @@
 <?php
+include '../config/config.php';
 
 if (!isset($_SESSION['username'])) {
   header('Location: login');
@@ -18,7 +19,9 @@ if (isset($_POST['deleteUser'])) {
 }
 
 $usersOnPage = 15;
+
 $currentPage = $_GET['page'] ?? '1';
+
 $pagination = preparePagination($pdo, $usersOnPage, $currentPage);
 
 if (!isset($_GET['page'])) {
