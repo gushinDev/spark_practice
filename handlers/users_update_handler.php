@@ -1,6 +1,8 @@
 <?php
 include '../config/config.php';
 
+checkAuth();
+
 if (isset($_GET['user_id'])) {
   $userId = $_GET['user_id'];
   $user = findUserById($pdo, $userId);

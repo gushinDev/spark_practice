@@ -40,6 +40,6 @@
 <br>
 <br>
 
-<h2 class="text-center"><a href="<?= $_SERVER['HTTP_REFERER']?>">Go back</a></h2>
+<h2 class="text-center"><a href="/profile">Go back</a></h2>
 
 </div>

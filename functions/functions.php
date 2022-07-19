@@ -22,10 +22,10 @@ function preparePagination($pdo, $numRows, $currentPage)
 function findAllUsers($pdo, int $pageNumber = 1)
 {
   $nubmerOfUsersOnOnePage = 15;
-  // $stmt = $pdo->prepare('select count(*) from users;');
   $startRowPosition = ($pageNumber - 1) * $nubmerOfUsersOnOnePage;
   $stmt = $pdo->query('SELECT * FROM users WHERE deleted = false ORDER BY user_id DESC LIMIT ' . $startRowPosition . ', ' . $nubmerOfUsersOnOnePage . ';');
-  return $stmt;
+  return $stmt->fetchAll();
+//  return $stmt;
 }
 
 function checkUserAlredyExist($pdo, $userData)
@@ -123,7 +123,6 @@ function updatePasswordById($pdo, $user_id)
     $stmt->execute(['user_id' => $user_id, 'password' => $newUserPassword]);
     return true;
   }
-
   return false;
 }
 

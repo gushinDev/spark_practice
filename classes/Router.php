@@ -16,7 +16,6 @@ class Router
       case preg_match('/^users$/', $this->uri):
         $this->includeHandlerAndView('users', 'users_handler');
         break;
-
       case preg_match('/^profile$/', $this->uri):
         $this->includeHandlerAndView('profile', 'profile_handler');
         break;

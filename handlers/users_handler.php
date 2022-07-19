@@ -33,3 +33,5 @@ if (isset($_GET['page']) && $_GET['page'] > $pagination['pageEnd']) {
   header("Location: ?page={$pagination['pageEnd']}");
 }
 
+$userList = findAllUsers($pdo, $_GET['page']);
+

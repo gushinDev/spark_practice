@@ -1,5 +1,4 @@
 <h1 class="text-center">Create user</h1>
-<!--<form method="POST" action="users/create">-->
 <form method="POST" action="/users/create">
     <input type="hidden" name="user_id" value="<?= $_SESSION['createUserForm']['user_id'] ?? '' ?>"/>
 

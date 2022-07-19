@@ -14,9 +14,8 @@
     </tr>
     </thead>
 
-  <?php $userList = findAllUsers($pdo, $_GET['page']); ?>
     <tbody>
-    <?php while ($row = $userList->fetch()) : ?>
+    <?php foreach ($userList as $row) : ?>
         <tr>
             <th scope="row"><?= $row['user_id'] ?></th>
             <td><?= $row['username'] ?></td>
@@ -40,7 +39,7 @@
           <?php endif; ?>
 
         </tr>
-    <?php endwhile; ?>
+    <?php endforeach; ?>
     </tbody>
 </table>
 
