@@ -1,7 +1,7 @@
 <h1 class="header text-center">Registration</h1>
 <div class="row" style="max-width: 50%; margin: 0 auto; margin-top: 50px">
   <div class="col-12">
-    <form method="POST" action="registration">
+    <form method="POST" action="/registration">
       <div class="form-outline mb-4">
         <input type="text" id="form2Example3" class="form-control" name="username" value="<?= $_SESSION['registration']['username'] ?? '' ?>" />
         <label class="form-label" for="form2Example3">User name</label>

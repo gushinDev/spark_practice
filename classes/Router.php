@@ -3,11 +3,14 @@
 class Router
 {
   private $uri = '';
+  private $path = [];
+  const ID_INDEX = 1;
 
   public function __construct($url)
   {
     $this->uri = trim($url, '/');
     $this->uri = parse_url($this->uri)['path'];
+    $this->path = explode('/', $this->uri);
 
     switch (true) {
       case preg_match('/^users$/', $this->uri):
@@ -21,6 +24,10 @@ class Router
       case preg_match('/^login$/', $this->uri):
         $this->includeHandlerAndView('login', 'login_handler');
         break;
+      case preg_match('/^login\/logout$/', $this->uri):
+        $_GET['logout'] = $this->path[self::ID_INDEX];
+        $this->includeHandlerAndView('login', 'login_handler');
+        break;
 
       case preg_match('/^registration$/', $this->uri):
         $this->includeHandlerAndView('registration', 'registration_handler');
@@ -31,20 +38,20 @@ class Router
         break;
 
       case preg_match('/^users\/\d*\/update$/', $this->uri):
-        $path = explode('/', $this->uri);
-        $_GET['user_id'] = $path[1];
+        $_GET['user_id'] = $this->path[self::ID_INDEX];
         $this->includeHandlerAndView('users_update', 'users_update_handler');
         break;
 
       case preg_match("/^users\/\d*\/change_password$/", $this->uri):
         $path = explode('/', $this->uri);
-        $_GET['user_id'] = $path[1];
+        $_GET['user_id'] = $path[self::ID_INDEX];
         $this->includeHandlerAndView('users_change_password', 'users_change_password_handler');
         break;
 
       default :
         http_response_code(404);
         $this->includeHandlerAndView('404');
+        break;
     }
   }
 

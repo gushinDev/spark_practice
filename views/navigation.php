@@ -16,7 +16,7 @@
   <hr>
   <?php if (isset($_SESSION['user_id'])) : ?>
     <div class="col-md-3 text-end">
-      <a href="/login?logout" class="btn btn-primary me-2">Logout</a>
+      <a href="/login/logout" class="btn btn-primary me-2">Logout</a>
     </div>
   <?php else : ?>
     <div class="col-md-3 text-end">

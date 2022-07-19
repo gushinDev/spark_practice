@@ -1,27 +1,8 @@
 <?php
 include '../config/config.php';
-if (!$_SESSION) {
-  header('Location: login');
-  die();
-}
-if (!checkAuth() || $_SESSION['role'] != 'admin') {
-  header('Location: login');
-  die();
-}
 
-if (checkIsCurrentUserInPost() && checkIsCurrentUserInGet()) {
-  header('Location: login');
-  die();
-}
-
-
-if (isset($_SESSION['role']) && $_SESSION['role'] != 'admin') {
-  header('Location: users');
-  die();
-}
-
-if (!checkAuth()) {
-  header('Location: login');
+if (!checkUserIsAdmin()) {
+  header('Location: /login');
   die();
 }
 

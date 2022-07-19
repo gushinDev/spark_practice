@@ -1,7 +1,7 @@
 <?php
 include '../config/config.php';
 if (isset($_SESSION['user_id'])) {
-  header("location: profile");
+  header("location: /profile");
 }
 
 if (isset($_POST['submit'])) {
@@ -16,7 +16,7 @@ if (isset($_POST['submit'])) {
 
   if (!$errors) {
     if (createNewUser($pdo, $_SESSION['registration'])) {
-      header('Location: login?success');
+      header('Location: /login?success');
     }
     echo 'User already exist';
   }

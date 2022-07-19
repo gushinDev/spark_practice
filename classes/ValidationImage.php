@@ -1,4 +1,5 @@
 <?php
+
 class ValidationImage
 {
   private $filename;
@@ -30,6 +31,14 @@ class ValidationImage
     $this->checkWrongExtensionFile();
 
     return $this->errors;
+  }
+
+  public function showValidationErrors()
+  {
+    $this->errors = array_unique($this->errors);
+    foreach ($this->errors as $error) {
+      echo $error;
+    }
   }
 
   private function checkEmptyFile()

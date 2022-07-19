@@ -1,21 +1,22 @@
 <?php
 include '../config/config.php';
+
 if (isset($_GET['user_id'])) {
   $userId = $_GET['user_id'];
   $user = findUserById($pdo, $userId);
-  
+
   if (!$user) {
-    echo 'user not found';
+    echo '<h1>User not found</h1>';
     die();
   }
 
   $_SESSION['updateUserForm'] =
     [
-      'user_id'   => $user['user_id'],
-      'username'  => $user['username'],
-      'email'     => $user['email'],
-      'img'       => $user['img'],
-      'role'      => $user['role']
+      'user_id' => $user['user_id'],
+      'username' => $user['username'],
+      'email' => $user['email'],
+      'img' => $user['img'],
+      'role' => $user['role']
     ];
 }
 

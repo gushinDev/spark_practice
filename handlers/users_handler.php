@@ -1,21 +1,18 @@
 <?php
 include '../config/config.php';
 
-if (!isset($_SESSION['username'])) {
-  header('Location: login');
+if (!isset($_SESSION['user_id'])) {
+  header('Location: /login');
   die();
 }
 
 if (isset($_POST['deleteUser'])) {
-
-  if ($_SESSION['role'] != 'admin') {
+  if (!checkUserIsAdmin()) {
     header('Location: ' . $_SERVER['HTTP_REFERER']);
   }
-
   if ($_SESSION['user_id'] != $_POST['user_id']) {
     deleteUser($pdo, $_POST['user_id']);
   }
-
 }
 
 $usersOnPage = 15;

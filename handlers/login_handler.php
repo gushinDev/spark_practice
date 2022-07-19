@@ -1,7 +1,8 @@
 <?php
 include '../config/config.php';
+
 if (isset($_SESSION['user_id'])) {
-  header("location: profile");
+  header("location: /profile");
 }
 
 if (isset($_GET['success'])) {
@@ -9,10 +10,9 @@ if (isset($_GET['success'])) {
   echo 'Success registration, now you can login';
 }
 
-
 if (isset($_GET['logout'])) {
   $_SESSION = [];
-  header('Location: login');
+  header('Location: /login');
 }
 
 if (isset($_POST['submit'])) {
@@ -30,7 +30,7 @@ if (isset($_POST['submit'])) {
     if ($user && checkPasswordMatches($postPassword, $user['password'])) {
       setLoginSession($user);
       unset($_SESSION['loginData']);
-      header('Location: profile');
+      header('Location: /profile');
     }
     echo 'Wrong username or password';
   }

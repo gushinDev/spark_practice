@@ -1,6 +1,6 @@
 <h1 class="text-center">Update user</h1>
 
-<img src="/img/<?= $_SESSION['updateUserForm']['img'] ?? 'default.png'?>" alt="" width="250px">
+<img src="../<?= $_SESSION['updateUserForm']['img'] ?? 'default.png'?>" alt="" width="250px">
 
 <form method="POST" action="/users/<?=$_SESSION['updateUserForm']['user_id']?>/update">
   <input type="hidden" name="user_id" value="<?= $_SESSION['updateUserForm']['user_id'] ?? '' ?>" />

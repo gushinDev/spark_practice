@@ -15,4 +15,4 @@
   <button type="submit" name="changePassword">Change</button>
 </form>
 
-<a href="<?= $_SERVER['HTTP_REFERER'] ?>" style="font-size:20px">Go back</a>
+<a href="/profile" style="font-size:20px">Go back</a>

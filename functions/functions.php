@@ -107,7 +107,7 @@ function checkUserExist($pdo, $userPostData)
 function checkPasswordMatches($inputPassword, $dbUserPassword)
 {
   if ($inputPassword != '' && isset($dbUserPassword)) {
-    return  password_verify($inputPassword, $dbUserPassword);
+    return password_verify($inputPassword, $dbUserPassword);
   }
   return false;
 }
@@ -137,7 +137,10 @@ function userLogin($pdo, $username)
 
 function checkAuth()
 {
-  return isset($_SESSION['user_id']);
+  if (!isset($_SESSION['user_id'])) {
+    header('Location: /login');
+    die();
+  }
 }
 
 function checkUserIsAdmin()
@@ -175,10 +178,29 @@ function deleteAvatar($pdo)
   $sql = 'UPDATE users SET img = null WHERE user_id = :user_id';
   $stmt = $pdo->prepare($sql);
   $stmt->execute(['user_id' => $_SESSION['user_id']]);
+  unlink($_POST['fileName']);
 }
 
-function setLoginSession($userData) {
+function setLoginSession($userData)
+{
   $_SESSION['username'] = $userData['username'];
   $_SESSION['role'] = $userData['role'];
   $_SESSION['user_id'] = $userData['user_id'];
+}
+
+function deleteOldPhoto() {
+  $findAll = glob("../img/{$_SESSION['user_id']}*");
+  foreach ($findAll as $img) {
+    unlink($img);
+  }
+}
+
+function setNewPhoto($pdo, $imgExtension) {
+  $updatedFileName = $_SESSION['user_id'] . '.' . $imgExtension;
+  $path = "../img/" . $updatedFileName;
+
+  $sql = 'UPDATE users SET img = :img WHERE user_id = :user_id';
+  $stmt = $pdo->prepare($sql);
+  $stmt->execute(['img' => $updatedFileName, 'user_id' => $_SESSION['user_id']]);
+  return $path;
 }

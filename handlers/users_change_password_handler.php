@@ -1,5 +1,8 @@
 <?php
 include '../config/config.php';
+
+checkAuth();
+
 if (
   (!checkUserIsAdmin() && checkIsCurrentUserInGet()) || (!checkUserIsAdmin() && checkIsCurrentUserInPost())
 ) {
@@ -7,10 +10,6 @@ if (
   die();
 }
 
-if (!checkAuth()) {
-  header('Location: login');
-  die();
-}
 
 if (isset($_POST['changePassword'])) {
 
