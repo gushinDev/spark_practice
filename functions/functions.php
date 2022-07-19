@@ -25,7 +25,6 @@ function findAllUsers($pdo, int $pageNumber = 1)
   $startRowPosition = ($pageNumber - 1) * $nubmerOfUsersOnOnePage;
   $stmt = $pdo->query('SELECT * FROM users WHERE deleted = false ORDER BY user_id DESC LIMIT ' . $startRowPosition . ', ' . $nubmerOfUsersOnOnePage . ';');
   return $stmt->fetchAll();
-//  return $stmt;
 }
 
 function checkUserAlredyExist($pdo, $userData)

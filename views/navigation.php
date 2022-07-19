@@ -13,6 +13,11 @@
                 Users
             </a>
         </li>
+        <li>
+            <a href="/courses" class="nav-link text-white">
+                Courses
+            </a>
+        </li>
     </ul>
     <hr>
   <?php if (isset($_SESSION['user_id'])) : ?>

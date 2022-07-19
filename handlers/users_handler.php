@@ -16,8 +16,8 @@ if (isset($_POST['deleteUser'])) {
 }
 
 $usersOnPage = 15;
-
-$currentPage = $_GET['page'] ?? '1';
+$firstPage = '1';
+$currentPage = $_GET['page'] ?? $firstPage;
 
 $pagination = preparePagination($pdo, $usersOnPage, $currentPage);
 

@@ -51,13 +51,4 @@
     <a href="?page=<?= $pagination['pageEnd'] ?>">end</a>
 </div>
 
-<script>
-    function deleteName(evt) {
-        if (confirm("Вы уверены, что хотите удалить запись?")) {
-            evt.preventDefault();
-        } else {
-            evt.submit();
-        }
-    }
-</script>
 
