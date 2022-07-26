@@ -2,6 +2,7 @@
 
 namespace app\Courses\Controllers;
 
+use app\Access\Controllers\AccessController;
 use app\Courses\Models\CoursesModel;
 
 class CoursesController
@@ -10,33 +11,44 @@ class CoursesController
 
     public function __construct()
     {
+        AccessController::redirectUnloggedUser();
         $this->coursesModel = new CoursesModel();
     }
 
-    public function index()
+    public function index(): void
     {
-        $userCourses = $this->coursesModel->findAllUserCourses($_SESSION['user_id']) ?? [];
-        require_once '../app/Courses/Views/CoursesView.php';
+        $courses = $this->coursesModel->findAllUserCourses($_SESSION['user_id']) ?? [];
+        require_once '../app/Courses/Views/UserCoursesView.php';
     }
 
-    public function deleteCourse($courseId)
+    public function allCourses(): void
+    {
+        $courses = $this->coursesModel->findAllCourses();
+        require_once '../app/Courses/Views/CatalogCoursesView.php';
+    }
+
+
+    public function deleteCourse($courseId): void
     {
         $this->coursesModel->deleteCourse($courseId[0]);
         header('Location: /courses');
     }
 
-    public function readCourse($courseId)
+    public function readCourse($courseId): void
     {
-        $currentCourse = $this->coursesModel->readCourse($courseId[0]);
+        $courseId = $courseId[0];
+        $currentCourse = $this->coursesModel->readCourse($courseId);
         $courseContent = json_decode($currentCourse['content'], JSON_OBJECT_AS_ARRAY);
+
         require_once '../app/Courses/Views/CurrentCourseView.php';
     }
 
-    public function createCourse()
+    public function createCourse(): void
     {
         if (isset($_POST['create_course'])) {
             $content = [
               [
+                'section_id' => uniqid(),
                 'type' => $_POST['type'],
                 'content' => $_POST['content']
               ]
@@ -55,13 +67,14 @@ class CoursesController
         require_once '../app/Courses/Views/CreateCourseFormView.php';
     }
 
-    public function addSection($courseIdParams)
+    public function addSection($courseIdParams): void
     {
         $courseId = $courseIdParams[0];
         if (isset($_POST['add_section'])) {
             $course = $this->coursesModel->readCourse($courseId);
             $courseContent = json_decode($course['content'], JSON_OBJECT_AS_ARRAY);
             $courseContent[] = [
+              'section_id' => uniqid(),
               'type' => $_POST['type'],
               'content' => $_POST['content']
             ];
@@ -72,8 +85,7 @@ class CoursesController
         require_once '../app/Courses/Views/AddSectionView.php';
     }
 
-
-    public function updateCourse($courseIdParams)
+    public function updateCourse($courseIdParams): void
     {
         $courseId = $courseIdParams[0];
 
@@ -90,5 +102,53 @@ class CoursesController
         $courseContent = json_decode($course['content'], JSON_OBJECT_AS_ARRAY);
         $courseTitle = $course['title'] ?? '';
         require_once '../app/Courses/Views/UpdateCourseView.php';
+    }
+
+    public function deleteSection(array $courseData = []): void
+    {
+        [$courseId, $sectionId] = $courseData;
+        $course = $this->coursesModel->readCourse($courseId);
+        $content = json_decode($course['content'], JSON_OBJECT_AS_ARRAY);
+        $content = array_values(
+          array_filter($content, function ($item) use ($sectionId) {
+              return $item['section_id'] !== $sectionId;
+          })
+        );
+        $courseData = [
+          'course_id' => $courseId,
+          'content' => json_encode($content)
+        ];
+        $this->coursesModel->updateCourseContent($courseData);
+        header('Location: /courses/' . $courseId);
+    }
+
+    public function updateSection($courseData): void
+    {
+        [$courseId, $sectionId] = $courseData;
+        $course = $this->coursesModel->readCourse($courseId);
+        $courseContent = json_decode($course['content'], JSON_OBJECT_AS_ARRAY);
+        if (isset($_POST['update_section'])) {
+            $newCourseContent = array_map(function ($item) use ($sectionId) {
+                if ($item['section_id'] === $sectionId) {
+                    return [
+                      ...$item,
+                      'content' => $_POST['content']
+                    ];
+                }
+            }, $courseContent);
+
+            $updatedCourseData = [
+              'course_id' => $courseId,
+              'content' => json_encode($newCourseContent)
+            ];
+            $this->coursesModel->updateCourseContent($updatedCourseData);
+            header('Location: /courses/' . $courseId);
+        }
+
+        $foundSection = array_filter($courseContent, function ($item) use ($sectionId) {
+            return $item['section_id'] === $sectionId;
+        });
+        [['content' => $content]] = $foundSection;
+        require_once '../app/Courses/Views/UpdateSectionView.php';
     }
 }

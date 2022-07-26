@@ -21,6 +21,14 @@ class CoursesModel
         return $stmt->fetchAll();
     }
 
+    public function findAllCourses(): bool|array
+    {
+        $sql = 'SELECT course_id, title, users.username as author FROM courses INNER JOIN users ON courses.author_id = users.user_id';
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
     public function deleteCourse($courseId): void
     {
         $sql = 'DELETE FROM courses WHERE course_id = :course_id';
@@ -69,5 +77,14 @@ class CoursesModel
         ]);
     }
 
+    public function updateCourseContent($courseData)
+    {
+        $sql = 'UPDATE courses SET content = :content WHERE course_id = :course_id';
+        $stmt = $this->connection->prepare($sql);
+        return $stmt->execute([
+          'course_id' => $courseData['course_id'],
+          'content' => $courseData['content']
+        ]);
+    }
 
 }

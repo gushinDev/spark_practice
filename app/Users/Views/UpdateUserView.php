@@ -5,7 +5,7 @@ require_once '../app/includes/navigation.php' ?>
     <h1 class="text-center">Update user</h1>
 
     <div class="container">
-        <img src="/img/<?= $_SESSION['updateUserForm']['img'] ?? 'default.png' ?>" width="200px">
+        <img src="/img/<?= $userImg ?>" width="200px">
         <form method="POST" action="/users/<?= $_SESSION['updateUserForm']['user_id'] ?>/update">
             <input type="hidden" name="user_id" value="<?= $_SESSION['updateUserForm']['user_id'] ?? '' ?>"/>
 

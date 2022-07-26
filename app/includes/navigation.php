@@ -15,26 +15,31 @@
         </li>
         <li>
             <a href="/courses" class="nav-link text-white">
-                Courses
+                My courses
+            </a>
+        </li>
+        <li>
+            <a href="/courses/catalog" class="nav-link text-white">
+                Course catalog
             </a>
         </li>
     </ul>
     <hr>
-  <?php
-  if (isset($_SESSION['user_id'])) : ?>
-      <div class="col-md-3 text-end">
-          <a href="/logout" class="btn btn-primary me-2">Logout</a>
-      </div>
-  <?php
-  else : ?>
-      <div class="col-md-3 text-end">
-          <a href="/login" class="btn btn-outline-primary me-2" style="width:200%">Login</a>
-          <br>
-          <br>
-          <a href="/registration" class="btn btn-primary me-2" style="width:200%">Sign-up</a>
-      </div>
-  <?php
-  endif; ?>
+    <?php
+    if (isset($_SESSION['user_id'])) : ?>
+        <div class="col-md-3 text-end">
+            <a href="/logout" class="btn btn-primary me-2">Logout</a>
+        </div>
+    <?php
+    else : ?>
+        <div class="col-md-3 text-end">
+            <a href="/login" class="btn btn-outline-primary me-2" style="width:200%">Login</a>
+            <br>
+            <br>
+            <a href="/registration" class="btn btn-primary me-2" style="width:200%">Sign-up</a>
+        </div>
+    <?php
+    endif; ?>
 </div>
 
 <div style="flex:1; max-width: 80%">

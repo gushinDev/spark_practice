@@ -4,6 +4,8 @@ namespace app\Users\Controllers;
 
 use app\Users\Models\UsersModel;
 use app\Users\Validation\UsersValidation;
+use app\Users\Validation\ImageValidation;
+use app\Access\Controllers\AccessController;
 
 class UsersController
 {
@@ -12,10 +14,7 @@ class UsersController
 
     public function __construct()
     {
-        if (!isset($_SESSION['user_id'])) {
-            header('Location: /login');
-            die();
-        }
+        AccessController::redirectUnloggedUser();
         $this->usersModel = new UsersModel();
     }
 
@@ -30,7 +29,7 @@ class UsersController
         require "../app/Users/Views/UsersView.php";
     }
 
-    private function checkValidPageNumber($pagination): void
+    private function checkValidPageNumber(array $pagination): void
     {
         if (!isset($_GET['page'])) {
             header("Location: /users?page={$pagination['pageStart']}");
@@ -45,7 +44,7 @@ class UsersController
         }
     }
 
-    public function findUser($userId): void
+    public function findUser(array $userId): void
     {
         if (isset($_SESSION['role']) && $_SESSION['role'] !== 'admin') {
             header('Location: /users');
@@ -56,16 +55,54 @@ class UsersController
 
     public function userProfile(): void
     {
+        if (isset($_POST['set_new_avatar'])) {
+            $validationImage = new ImageValidation($_FILES);
+            $errors = $validationImage->validateFile();
+            $validationImage->showValidationErrors();
+
+            if (!$errors) {
+                $this->deleteOldPhoto();
+                $newPhotoPath = $this->usersModel->setNewAvatar($validationImage->getExtension());
+                print_r($newPhotoPath);
+                if (move_uploaded_file($validationImage->getTempName(), $newPhotoPath)) {
+                    header("Location: /profile");
+                    die();
+                }
+            }
+        }
+
+        if (isset($_POST['delete_avatar'])) {
+            if ($_POST['fileName'] != './img/default.png' && str_contains($_POST['fileName'], $_SESSION['user_id'])) {
+                $this->usersModel->deleteAvatar();
+                unlink($_POST['fileName']);
+            }
+        }
+
         $user = $this->usersModel->getUserById($_SESSION['user_id']);
-        $userImg = 'default.png';
+
+        $userImg = $user['img'];
+
+        if (empty($user['img']) || !file_exists("./img/{$user['img']}")) {
+            $userImg = 'default.png';
+        }
 
         require "../app/Users/Views/UserProfileView.php";
     }
+
+    private function deleteOldPhoto()
+    {
+        $findAll = glob("/img/{$_SESSION['user_id']}*");
+        foreach ($findAll as $img) {
+            unlink($img);
+        }
+    }
+
 
     public function createUser(): void
     {
         if (isset($_SESSION['role']) && $_SESSION['role'] !== 'admin') {
             header('Location: /users');
+            die();
         }
         if (isset($_POST['create_new_user'])) {
             $_SESSION['createUserForm']['username'] = $_POST['username'];
@@ -97,7 +134,7 @@ class UsersController
         require "../app/Users/Views/CreateUserView.php";
     }
 
-    public function updateUser($userParams): void
+    public function updateUser(array $userParams): void
     {
         $userId = $userParams[0];
         $user = $this->usersModel->getUserById($userId);
@@ -137,6 +174,11 @@ class UsersController
               'role' => $user['role']
             ];
         }
+        $userImg = $user['img'];
+
+        if (empty($user['img']) || !file_exists("./img/{$user['img']}")) {
+            $userImg = 'default.png';
+        }
 
         require '../app/Users/Views/UpdateUserView.php';
     }
@@ -167,7 +209,7 @@ class UsersController
         die();
     }
 
-    private function getPagination()
+    private function getPagination(): array
     {
         $usersOnPage = 15;
         $pageStart = 1;
@@ -182,5 +224,4 @@ class UsersController
           'currentPage' => $currentPage
         ];
     }
-
 }

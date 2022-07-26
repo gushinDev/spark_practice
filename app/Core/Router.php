@@ -24,6 +24,9 @@ class Router
       'courses\/(\d+)' => 'app/Courses/Controllers/CoursesController@readCourse',
       'courses\/(\d+)\/add_section' => 'app/Courses/Controllers/CoursesController@addSection',
       'courses\/(\d+)\/update' => 'app/Courses/Controllers/CoursesController@updateCourse',
+      'courses\/catalog' => 'app/Courses/Controllers/CoursesController@allCourses',
+      'courses\/(\d+)\/sections\/([a-zA-Z0-9]+)\/delete' => 'app/Courses/Controllers/CoursesController@deleteSection',
+      'courses\/(\d+)\/sections\/([a-zA-Z0-9]+)\/update' => 'app/Courses/Controllers/CoursesController@updateSection'
     ];
 
     public function __construct($url)
@@ -31,12 +34,8 @@ class Router
         $this->url = filter_var(trim($url, '/'), FILTER_SANITIZE_URL);
         [$action, $params] = $this->findRouteMatches();
         [$controller, $actionName] = $this->parseActionForUrl($action);
-        $controllerObj = new $controller();
-        if ($params) {
-            $controllerObj->$actionName($params);
-        } else {
-            $controllerObj->$actionName();
-        }
+        $controllerObj = new $controller($actionName);
+        $controllerObj->$actionName($params ? $params : []);
     }
 
     public function findRouteMatches(): array

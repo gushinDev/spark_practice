@@ -39,6 +39,12 @@ class UsersModel
         return $stmt->fetch();
     }
 
+    public function deleteAvatar() {
+        $sql = 'UPDATE users SET img = null WHERE user_id = :user_id';
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute(['user_id' => $_SESSION['user_id']]);
+    }
+
     public function addUser($userData): bool|int
     {
         if ($this->checkUserExist($userData)) {
@@ -82,7 +88,12 @@ class UsersModel
         return $quantityOfUsers['count(*)'];
     }
 
-    public function setNewAvatar() {
-
+    public function setNewAvatar($imgExtension) {
+        $updatedFileName = $_SESSION['user_id'] . '.' . $imgExtension;
+        $path = "./img/" . $updatedFileName;
+        $sql = 'UPDATE users SET img = :img WHERE user_id = :user_id';
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute(['img' => $updatedFileName, 'user_id' => $_SESSION['user_id']]);
+        return $path;
     }
 }

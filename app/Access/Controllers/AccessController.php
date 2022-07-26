@@ -12,11 +12,10 @@ class AccessController
     private AccessModel $accessModel;
     private string $errors;
 
-    public function __construct()
+    public function __construct($actionName)
     {
-        if (isset($_SESSION['user_id'])) {
-            header('Location: /profile');
-        }
+        $this->redirectLoggedUser($actionName);
+
         require "../app/Users/Models/UsersModel.php";
         require "../app/Access/Validation/AccessValidation.php";
         $this->usersModel = new UsersModel();
@@ -57,6 +56,7 @@ class AccessController
     {
         if (isset($_POST['user_register'])) {
             $this->setRegistrationAutoFillFormData();
+
             $validation = new AccessValidation($_SESSION['registration']);
             $errors = $validation->validateRegistrationForm();
             $_SESSION['registration']['errors'] = $validation->getErrorsAsString();
@@ -98,5 +98,33 @@ class AccessController
         $_SESSION['registration']['username'] = $_POST['username'];
         $_SESSION['registration']['email'] = $_POST['email'];
         $_SESSION['registration']['password'] = $_POST['password'];
+    }
+
+    private function redirectLoggedUser($actionName): void
+    {
+        if ($actionName !== 'logout') {
+            if ($this->checkUserUnlogged()) {
+                header('Location: /profile');
+                die();
+            }
+        }
+    }
+
+    private function checkUserUnlogged(): bool
+    {
+        return isset($_SESSION['user_id']);
+    }
+
+    public static function redirectUnloggedUser(): void
+    {
+        if (self::checkUserLogged()) {
+            header('Location: /login');
+            die();
+        }
+    }
+
+    public static function checkUserLogged(): bool
+    {
+        return (!isset($_SESSION['user_id']));
     }
 }

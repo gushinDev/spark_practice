@@ -10,6 +10,10 @@ require_once '../app/includes/navigation.php'; ?>
         foreach ($courseContent as $row) : ?>
             <li class="list-group-item"><h3><?= $row['type'] ?></h3></li>
             <li class="list-group-item"><?= $row['content'] ?></li>
+            <li class="list-group-item">
+                <a href="/courses/<?= $courseId ?>/sections/<?= $row['section_id'] ?>/update">Update</a>
+                <a href="/courses/<?= $courseId ?>/sections/<?= $row['section_id'] ?>/delete"  class="delete-btn">Delete</a>
+            </li>
             <br>
         <?php
         endforeach; ?>
