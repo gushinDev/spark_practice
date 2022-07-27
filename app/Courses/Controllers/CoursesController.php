@@ -46,37 +46,41 @@ class CoursesController
     public function createCourse(): void
     {
         if (isset($_POST['create_course'])) {
-            $content = [
-              [
-                'section_id' => uniqid(),
-                'type' => $_POST['type'],
-                'content' => $_POST['content']
-              ]
-            ];
-            $contentJSON = json_encode($content);
+            if (empty(trim($_POST['title']))) {
+                echo 'Empty title';
+            } else {
+                $content = [
+                  [
+                    'section_id' => uniqid(),
+                    'type' => $_POST['type'],
+                    'content' => strip_tags($_POST['content'])
+                  ]
+                ];
+                $contentJSON = json_encode($content);
 
-            $courseData = [
-              'title' => $_POST['title'],
-              'user_id' => $_SESSION['user_id'],
-              'content' => $contentJSON
-            ];
+                $courseData = [
+                  'title' => strip_tags($_POST['title']),
+                  'user_id' => $_SESSION['user_id'],
+                  'content' => $contentJSON
+                ];
 
-            $this->coursesModel->createNewCourse($courseData);
-            header('Location: /courses');
+                $this->coursesModel->createNewCourse($courseData);
+                header('Location: /courses');
+            }
         }
         require_once '../app/Courses/Views/CreateCourseFormView.php';
     }
 
     public function addSection($courseIdParams): void
     {
-        $courseId = $courseIdParams[0];
+        $courseId = array_shift($courseIdParams);
         if (isset($_POST['add_section'])) {
             $course = $this->coursesModel->readCourse($courseId);
             $courseContent = json_decode($course['content'], JSON_OBJECT_AS_ARRAY);
             $courseContent[] = [
               'section_id' => uniqid(),
               'type' => $_POST['type'],
-              'content' => $_POST['content']
+              'content' => strip_tags($_POST['content'])
             ];
 
             $this->coursesModel->addNewSection($courseId, json_encode($courseContent));
@@ -132,7 +136,7 @@ class CoursesController
                 if ($item['section_id'] === $sectionId) {
                     return [
                       ...$item,
-                      'content' => $_POST['content']
+                      'content' => strip_tags($_POST['content'])
                     ];
                 }
             }, $courseContent);
@@ -145,10 +149,13 @@ class CoursesController
             header('Location: /courses/' . $courseId);
         }
 
-        $foundSection = array_filter($courseContent, function ($item) use ($sectionId) {
-            return $item['section_id'] === $sectionId;
-        });
-        [['content' => $content]] = $foundSection;
+        $foundSection = array_values(
+          array_filter($courseContent, function ($item) use ($sectionId) {
+              return $item['section_id'] === $sectionId;
+          })
+        );
+
+        [['content' => $content, 'type' => $type]] = $foundSection;
         require_once '../app/Courses/Views/UpdateSectionView.php';
     }
 }

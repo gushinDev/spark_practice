@@ -2,7 +2,7 @@
 
 require_once '../app/includes/header.php';
 require_once '../app/includes/navigation.php'; ?>
-    <h1 class="text-center">Create course</h1>
+    <h1 class="text-center">Add section</h1>
 
     <form method="POST" action="/courses/<?= $courseId ?>/add_section">
         <h2 class="">Content</h2>

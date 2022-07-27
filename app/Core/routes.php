@@ -7,6 +7,7 @@ $routes = [
   'users\/create' => 'app/Users/Controllers/UsersController@createUser',
   'users\/(\d+)\/delete' => 'app/Users/Controllers/UsersController@deleteUser',
   'users\/(\d+)\/update' => 'app/Users/Controllers/UsersController@updateUser',
+  'users\/(\d+)\/update_password' => 'app/Users/Controllers/UsersController@updatePassword',
   'login' => 'app/Access/Controllers/AccessController@login',
   'registration' => 'app/Access/Controllers/AccessController@registration',
   'logout' => 'app/Access/Controllers/AccessController@logout',
@@ -19,5 +20,5 @@ $routes = [
   'courses\/(\d+)\/update' => 'app/Courses/Controllers/CoursesController@updateCourse',
   'courses\/catalog' => 'app/Courses/Controllers/CoursesController@allCourses',
   'courses\/(\d+)\/sections\/([a-zA-Z0-9]+)\/delete' => 'app/Courses/Controllers/CoursesController@deleteSection',
-  'courses\/(\d+)\/sections\/([a-zA-Z0-9]+)\/update' => 'app/Courses/Controllers/CoursesController@updateSection'
+  'courses\/(\d+)\/sections\/([a-zA-Z0-9]+)\/update' => 'app/Courses/Controllers/CoursesController@updateSection',
 ];

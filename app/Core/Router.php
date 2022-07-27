@@ -10,17 +10,26 @@ class Router
     public function __construct($url)
     {
         $this->initRoutes();
-        $this->url = filter_var(trim($url, '/'), FILTER_SANITIZE_URL);
+        $this->prepareUrl($url);
+
         [$action, $params] = $this->findRouteMatches();
         [$controller, $actionName] = $this->parseActionForUrl($action);
-        $controllerObj = new $controller($actionName);
-        $controllerObj->$actionName($params ? $params : []);
+
+        $this->initControllerAndAction($controller, $actionName, $params);
     }
 
     private function initRoutes(): void
     {
         require_once '../app/Core/routes.php';
         $this->routes = $routes;
+    }
+
+    private function prepareUrl($url): void
+    {
+        if (!empty($_SERVER['QUERY_STRING'])) {
+            [$url, $getParams] = explode('?', $url);
+        }
+        $this->url = filter_var(trim($url, '/'), FILTER_SANITIZE_URL);
     }
 
     public function findRouteMatches(): array
@@ -34,6 +43,11 @@ class Router
         return ['app/Access/Controllers/AccessController@notFound', []];
     }
 
+    private function initControllerAndAction($controller, $actionName, $params): void
+    {
+        $controllerObj = new $controller($actionName);
+        $controllerObj->$actionName($params ? $params : []);
+    }
 
     private function parseActionForUrl(string $action): array
     {

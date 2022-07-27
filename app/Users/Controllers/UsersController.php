@@ -5,7 +5,8 @@ namespace app\Users\Controllers;
 use app\Users\Models\UsersModel;
 use app\Users\Validation\UsersValidation;
 use app\Users\Validation\ImageValidation;
-use app\Access\Controllers\AccessController;
+use app\Access\Controllers\AccessController as AccessController;
+
 
 class UsersController
 {
@@ -90,14 +91,13 @@ class UsersController
         require "../app/Users/Views/UserProfileView.php";
     }
 
-    private function deleteOldPhoto()
+    private function deleteOldPhoto(): void
     {
         $findAll = glob("/img/{$_SESSION['user_id']}*");
         foreach ($findAll as $img) {
             unlink($img);
         }
     }
-
 
     public function createUser(): void
     {
@@ -140,29 +140,26 @@ class UsersController
         $userId = $userParams[0];
         $user = $this->usersModel->getUserById($userId);
 
-        if ($_SESSION['role'] !== 'admin' && $user['user_id'] !== $_SESSION['user_id']) {
-            header('Location: /users');
-            die();
-        }
 
-        if (!$user) {
-            header('Location: /users');
-            die();
+        if ($_SESSION['role'] !== 'admin') {
+            if ((int)$user['user_id'] !== (int)$_SESSION['user_id']) {
+                header('Location: /not_found');
+                die();
+            }
         }
 
         if (isset($_POST['update_user'])) {
             $_SESSION['updateUserForm'] = [
               'username' => $_POST['username'],
               'email' => $_POST['email'],
-              'role' => $_POST['role'],
+              'role' => $_POST['role'] ?? 'user',
               'user_id' => $userId,
             ];
 
             $validation = new UsersValidation($_SESSION['updateUserForm']);
             $errors = $validation->validateUpdateForm();
-
             if (!$errors) {
-                $this->updateCurrentUser($userId);
+                $this->usersModel->updateUser($_SESSION['updateUserForm']);
                 header('Location: /users');
                 die();
             }
@@ -184,16 +181,6 @@ class UsersController
         require '../app/Users/Views/UpdateUserView.php';
     }
 
-    private function updateCurrentUser($userId): void
-    {
-        $foundUserInDb = $this->usersModel->checkUserExist($_SESSION['updateUserForm']);
-
-        if ((int)$foundUserInDb['user_id'] !== (int)$userId) {
-            $this->usersModel->updateUser($_SESSION['updateUserForm']);
-        }
-        echo 'User already exist';
-    }
-
     public function deleteUser($userId): void
     {
         if (isset($_SESSION['role']) && $_SESSION['role'] !== 'admin') {
@@ -208,6 +195,28 @@ class UsersController
         }
         header('Location: /users');
         die();
+    }
+
+    public function updatePassword($userParams): void
+    {
+        $userId = array_shift($userParams);
+        $user = $this->usersModel->getUserById($userId);
+        if (isset($_POST['update_password'])) {
+            if (password_verify($_POST['current_password'], $user['password'])) {
+                $userData = [
+                  'user_id' => $user['user_id'],
+                  'password' => password_hash($_POST['new_password'], PASSWORD_DEFAULT)
+                ];
+
+                if ($this->usersModel->updatePassword($userData)) {
+                    header('Location: /users/' . $userId . '/update');
+                    die();
+                }
+            }
+            echo 'Wrong current password';
+        }
+
+        require_once '../app/Users/Views/UpdatePasswordView.php';
     }
 
     private function getPagination(): array

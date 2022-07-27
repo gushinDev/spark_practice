@@ -9,9 +9,9 @@ require_once '../app/includes/navigation.php'; ?>
         <div class="form-group">
             <label for="role">Type :</label>
             <select name="type" id="role">
-                <option value="text" selected>Text</option>
-                <option value="link">Link</option>
-                <option value="video">Video</option>
+                <option value="text" <?= $type === 'text' ? 'selected' : '' ?>>Text</option>
+                <option value="link" <?= $type === 'link' ? 'selected' : '' ?>>Link</option>
+                <option value="video" <?= $type === 'video' ? 'selected' : '' ?>>Video</option>
             </select>
         </div>
         <br>

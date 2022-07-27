@@ -1,17 +1,24 @@
-<?php require_once '../app/includes/header.php'; ?>
-<?php require_once '../app/includes/navigation.php' ?>
+<?php
 
-<?php if (!$user) : ?>
-    <h1>User not found</h1>
-<?php else : ?>
-    <h1>User <?= $user['username'] ?></h1>
-    <ul class="list-group">
-        <li class="list-group-item">id: <?= $user['user_id'] ?></li>
-        <li class="list-group-item">username: <?= $user['username'] ?></li>
-        <li class="list-group-item">email: <?= $user['email'] ?></li>
-    </ul>
-<?php endif; ?>
+require_once '../app/includes/header.php';
+require_once '../app/includes/navigation.php' ?>
 
-    <h3><a href="/users">Go back</a></h3>
+    <h1>Update password</h1>
+    <form method="POST" action="/users/<?= $userId ?>/update_password">
+        <div class="form-outline mb-4">
+            <input type="password" id="form2Example2" class="form-control" name="current_password"/>
+            <label class="form-label" for="form2Example2">Current password</label>
+        </div>
 
-<?php require_once '../app/includes/footer.php'; ?>
+        <div class="form-outline mb-4">
+            <input type="password" id="form2Example2" class="form-control" name="new_password"/>
+            <label class="form-label" for="form2Example2">New password</label>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary" name="update_password">Update password</button>
+        </div>
+
+        <a href="/users/<?= $userId ?>/update" style="font-size: 20px">Go to user</a>
+    </form>
+<?php
+require_once '../app/includes/footer.php'; ?>

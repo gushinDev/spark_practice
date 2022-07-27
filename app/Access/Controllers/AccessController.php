@@ -119,4 +119,8 @@ class AccessController
     {
         return isset($_SESSION['user_id']);
     }
+
+    public static function checkUserIsAdmin():bool {
+        return isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
+    }
 }

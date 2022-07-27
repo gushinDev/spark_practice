@@ -1,9 +1,10 @@
 <?php
+use app\Access\Controllers\AccessController;
 
 require_once '../app/includes/header.php';
 require_once '../app/includes/navigation.php';
 
-if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') : ?>
+if (AccessController::checkUserIsAdmin()) : ?>
     <a href="/users/create" style="font-size:24px">Create new user</a>
 <?php
 endif; ?>
@@ -29,7 +30,7 @@ endif; ?>
                 <td><?= $user['role'] ?></td>
 
                 <?php
-                if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') : ?>
+                if (AccessController::checkUserIsAdmin()) : ?>
                     <td><a href="/users/<?= $user['user_id'] ?>">watch</a></td>
                     <td><a href="/users/<?= $user['user_id'] ?>/update">update</a></td>
 
