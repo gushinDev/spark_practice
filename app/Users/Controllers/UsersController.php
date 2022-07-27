@@ -14,7 +14,7 @@ class UsersController
 
     public function __construct()
     {
-        AccessController::redirectUnloggedUser();
+        AccessController::redirectNotLoggedUser();
         $this->usersModel = new UsersModel();
     }
 
@@ -48,6 +48,7 @@ class UsersController
     {
         if (isset($_SESSION['role']) && $_SESSION['role'] !== 'admin') {
             header('Location: /users');
+            die();
         }
         $user = $this->usersModel->getUserById($userId[0]);
         require "../app/Users/Views/FindUserView.php";

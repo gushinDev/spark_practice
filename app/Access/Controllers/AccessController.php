@@ -15,13 +15,10 @@ class AccessController
     public function __construct($actionName)
     {
         $this->redirectLoggedUser($actionName);
-
-        require "../app/Users/Models/UsersModel.php";
-        require "../app/Access/Validation/AccessValidation.php";
         $this->usersModel = new UsersModel();
     }
 
-    public function notFound()
+    public function notFound(): void
     {
         require '../app/Access/Views/NotFoundView.php';
     }
@@ -34,7 +31,6 @@ class AccessController
 
     public function login(): void
     {
-        require "../app/Access/Models/AccessModel.php";
         $this->accessModel = new AccessModel();
 
         if (isset($_POST['user_login'])) {
@@ -78,6 +74,7 @@ class AccessController
               'user_id' => $user['user_id'],
               'role' => $user['role']
             ];
+
             unset($_SESSION['loginData']);
             header('Location: /profile');
         }
@@ -102,22 +99,17 @@ class AccessController
 
     private function redirectLoggedUser($actionName): void
     {
-        if ($actionName !== 'logout') {
-            if ($this->checkUserUnlogged()) {
+        if ($actionName !== 'logout' && $actionName !== 'notFound') {
+            if (self::checkUserLogged()) {
                 header('Location: /profile');
                 die();
             }
         }
     }
 
-    private function checkUserUnlogged(): bool
+    public static function redirectNotLoggedUser(): void
     {
-        return isset($_SESSION['user_id']);
-    }
-
-    public static function redirectUnloggedUser(): void
-    {
-        if (self::checkUserLogged()) {
+        if (!self::checkUserLogged()) {
             header('Location: /login');
             die();
         }
@@ -125,6 +117,6 @@ class AccessController
 
     public static function checkUserLogged(): bool
     {
-        return (!isset($_SESSION['user_id']));
+        return isset($_SESSION['user_id']);
     }
 }

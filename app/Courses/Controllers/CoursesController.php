@@ -11,7 +11,7 @@ class CoursesController
 
     public function __construct()
     {
-        AccessController::redirectUnloggedUser();
+        AccessController::redirectNotLoggedUser();
         $this->coursesModel = new CoursesModel();
     }
 
