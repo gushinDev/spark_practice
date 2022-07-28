@@ -33,15 +33,23 @@ class CoursesController
         $this->redirectNotOwnerCourse($courseId);
         $this->coursesModel->deleteCourse($courseId);
         header('Location: /courses');
+        die();
     }
 
-    public function readCourse($courseId): void
+    public function readCourse($courseData): void
     {
-        $courseId = array_shift($courseId);
+        $courseId = array_shift($courseData);
         $currentCourse = $this->coursesModel->readCourse($courseId);
         $courseContent = json_decode($currentCourse['content'], JSON_OBJECT_AS_ARRAY);
+//        $courseContent = $this->changeLinksView($courseContent);
+        $authorId = $currentCourse['author_id'];
 
-        $courseContent = array_map(function ($item) {
+        require_once '../app/Courses/Views/CurrentCourseView.php';
+    }
+
+    private function changeLinksView($courseContent): array
+    {
+        return array_map(function ($item) {
             if ($item['type'] === 'link') {
                 $content = $item['content'];
                 return [
@@ -51,9 +59,6 @@ class CoursesController
             }
             return $item;
         }, $courseContent);
-
-        $authorId = $currentCourse['author_id'];
-        require_once '../app/Courses/Views/CurrentCourseView.php';
     }
 
     public function createCourse(): void
@@ -84,30 +89,36 @@ class CoursesController
         require_once '../app/Courses/Views/CreateCourseFormView.php';
     }
 
-    public function addSection($courseIdParams): void
+    public function addSection($courseData): void
     {
-        $courseId = array_shift($courseIdParams);
+        $courseId = array_shift($courseData);
 
         $this->redirectNotOwnerCourse($courseId);
 
         if (isset($_POST['add_section'])) {
             $course = $this->coursesModel->readCourse($courseId);
-            $courseContent = json_decode($course['content'], JSON_OBJECT_AS_ARRAY);
-            $courseContent[] = [
-              'section_id' => uniqid(),
-              'type' => $_POST['type'],
-              'content' => strip_tags($_POST['content'])
-            ];
-
+            $courseContent = $this->prepareCourseContent($course);
             $this->coursesModel->addNewSection($courseId, json_encode($courseContent));
             header('Location: /courses');
+            die();
         }
         require_once '../app/Courses/Views/AddSectionView.php';
     }
 
-    public function updateCourse($courseIdParams): void
+    private function prepareCourseContent($course)
     {
-        $courseId = $courseIdParams[0];
+        $courseContent = json_decode($course['content'], JSON_OBJECT_AS_ARRAY);
+        $courseContent[] = [
+          'section_id' => uniqid(),
+          'type' => $_POST['type'],
+          'content' => strip_tags($_POST['content'])
+        ];
+        return $courseContent;
+    }
+
+    public function updateCourse($courseData): void
+    {
+        $courseId = array_shift($courseData);
 
         $this->redirectNotOwnerCourse($courseId);
 
@@ -118,6 +129,7 @@ class CoursesController
             ];
             $this->coursesModel->updateCourse($courseData);
             header('Location: /courses');
+            die();
         }
 
         $course = $this->coursesModel->readCourse($courseId);
@@ -170,14 +182,19 @@ class CoursesController
             header('Location: /courses/' . $courseId);
         }
 
-        $foundSection = array_values(
+        $foundSection = $this->findUpdatedSection($courseContent, $sectionId);
+
+        ['content' => $content, 'type' => $type] = array_shift($foundSection);
+        require_once '../app/Courses/Views/UpdateSectionView.php';
+    }
+
+    private function findUpdatedSection($courseContent, $sectionId): array
+    {
+        return array_values(
           array_filter($courseContent, function ($item) use ($sectionId) {
               return $item['section_id'] === $sectionId;
           })
         );
-
-        [['content' => $content, 'type' => $type]] = $foundSection;
-        require_once '../app/Courses/Views/UpdateSectionView.php';
     }
 
     private function redirectNotOwnerCourse($courseId): void
