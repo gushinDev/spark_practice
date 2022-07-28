@@ -120,7 +120,21 @@ class AccessController
         return isset($_SESSION['user_id']);
     }
 
-    public static function checkUserIsAdmin():bool {
+    public static function checkUserIsAdmin(): bool
+    {
         return isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
+    }
+
+    public static function redirectNotOwnerAccount($userId): void
+    {
+        if (!self::checkItIsCurrentUser($userId)) {
+            header('Location: /not_found');
+            die();
+        }
+    }
+
+    public static function checkItIsCurrentUser($userId): bool
+    {
+        return (string)$_SESSION['user_id'] === (string)$userId;
     }
 }

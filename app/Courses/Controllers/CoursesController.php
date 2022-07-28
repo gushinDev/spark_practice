@@ -27,19 +27,32 @@ class CoursesController
         require_once '../app/Courses/Views/CatalogCoursesView.php';
     }
 
-
-    public function deleteCourse($courseId): void
+    public function deleteCourse($courseData): void
     {
-        $this->coursesModel->deleteCourse($courseId[0]);
+        $courseId = array_shift($courseData);
+        $this->redirectNotOwnerCourse($courseId);
+        $this->coursesModel->deleteCourse($courseId);
         header('Location: /courses');
     }
 
     public function readCourse($courseId): void
     {
-        $courseId = $courseId[0];
+        $courseId = array_shift($courseId);
         $currentCourse = $this->coursesModel->readCourse($courseId);
         $courseContent = json_decode($currentCourse['content'], JSON_OBJECT_AS_ARRAY);
 
+        $courseContent = array_map(function ($item) {
+            if ($item['type'] === 'link') {
+                $content = $item['content'];
+                return [
+                  ...$item,
+                  'content' => "<a href='$content'>Go to $content</a>"
+                ];
+            }
+            return $item;
+        }, $courseContent);
+
+        $authorId = $currentCourse['author_id'];
         require_once '../app/Courses/Views/CurrentCourseView.php';
     }
 
@@ -74,6 +87,9 @@ class CoursesController
     public function addSection($courseIdParams): void
     {
         $courseId = array_shift($courseIdParams);
+
+        $this->redirectNotOwnerCourse($courseId);
+
         if (isset($_POST['add_section'])) {
             $course = $this->coursesModel->readCourse($courseId);
             $courseContent = json_decode($course['content'], JSON_OBJECT_AS_ARRAY);
@@ -93,6 +109,8 @@ class CoursesController
     {
         $courseId = $courseIdParams[0];
 
+        $this->redirectNotOwnerCourse($courseId);
+
         if (isset($_POST['update_course'])) {
             $courseData = [
               'title' => $_POST['title'],
@@ -111,6 +129,8 @@ class CoursesController
     public function deleteSection(array $courseData = []): void
     {
         [$courseId, $sectionId] = $courseData;
+        $this->redirectNotOwnerCourse($courseId);
+
         $course = $this->coursesModel->readCourse($courseId);
         $content = json_decode($course['content'], JSON_OBJECT_AS_ARRAY);
         $content = array_values(
@@ -129,6 +149,7 @@ class CoursesController
     public function updateSection($courseData): void
     {
         [$courseId, $sectionId] = $courseData;
+        $this->redirectNotOwnerCourse($courseId);
         $course = $this->coursesModel->readCourse($courseId);
         $courseContent = json_decode($course['content'], JSON_OBJECT_AS_ARRAY);
         if (isset($_POST['update_section'])) {
@@ -157,5 +178,19 @@ class CoursesController
 
         [['content' => $content, 'type' => $type]] = $foundSection;
         require_once '../app/Courses/Views/UpdateSectionView.php';
+    }
+
+    private function redirectNotOwnerCourse($courseId): void
+    {
+        if (!$this->checkItIsCourseOwner($courseId)) {
+            header('Location: /not_found');
+            die();
+        }
+    }
+
+    private function checkItIsCourseOwner($courseId): bool
+    {
+        $currentCourse = $this->coursesModel->readCourse($courseId);
+        return (string)$_SESSION['user_id'] === (string)$currentCourse['author_id'];
     }
 }

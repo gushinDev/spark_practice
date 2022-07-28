@@ -51,7 +51,7 @@ class UsersModel
         if ($this->checkUserExist($userData)) {
             return false;
         }
-        $query = 'INSERT INTO `course`.`users` (`username`, `email`, `password`, `role`) 
+        $query = 'INSERT INTO `spark`.`users` (`username`, `email`, `password`, `role`) 
               VALUES (:username, :email, :password, :role)';
         $stmt = $this->connection->prepare($query);
         return $stmt->execute([

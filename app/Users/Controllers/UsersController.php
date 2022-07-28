@@ -200,7 +200,10 @@ class UsersController
     public function updatePassword($userParams): void
     {
         $userId = array_shift($userParams);
+        AccessController::redirectNotOwnerAccount($userId);
+
         $user = $this->usersModel->getUserById($userId);
+
         if (isset($_POST['update_password'])) {
             if (password_verify($_POST['current_password'], $user['password'])) {
                 $userData = [
