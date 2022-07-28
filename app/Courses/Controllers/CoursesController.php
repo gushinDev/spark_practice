@@ -164,28 +164,34 @@ class CoursesController
         $this->redirectNotOwnerCourse($courseId);
         $course = $this->coursesModel->readCourse($courseId);
         $courseContent = json_decode($course['content'], JSON_OBJECT_AS_ARRAY);
-        if (isset($_POST['update_section'])) {
-            $newCourseContent = array_map(function ($item) use ($sectionId) {
-                if ($item['section_id'] === $sectionId) {
-                    return [
-                      ...$item,
-                      'content' => strip_tags($_POST['content'])
-                    ];
-                }
-            }, $courseContent);
 
-            $updatedCourseData = [
-              'course_id' => $courseId,
-              'content' => json_encode($newCourseContent)
-            ];
+        if (isset($_POST['update_section'])) {
+            $updatedCourseData = $this->prepareUpdatedSection($sectionId, $courseContent, $courseId);
             $this->coursesModel->updateCourseContent($updatedCourseData);
             header('Location: /courses/' . $courseId);
         }
 
         $foundSection = $this->findUpdatedSection($courseContent, $sectionId);
-
         ['content' => $content, 'type' => $type] = array_shift($foundSection);
+
         require_once '../app/Courses/Views/UpdateSectionView.php';
+    }
+
+    private function prepareUpdatedSection($sectionId, $courseContent, $courseId): array
+    {
+        $newCourseContent = array_map(function ($item) use ($sectionId) {
+            if ($item['section_id'] === $sectionId) {
+                return [
+                  ...$item,
+                  'content' => strip_tags($_POST['content'])
+                ];
+            }
+        }, $courseContent);
+
+        return [
+          'course_id' => $courseId,
+          'content' => json_encode($newCourseContent)
+        ];
     }
 
     private function findUpdatedSection($courseContent, $sectionId): array

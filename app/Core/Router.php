@@ -20,7 +20,7 @@ class Router
 
     private function initRoutes(): void
     {
-        require_once '../app/Core/routes.php';
+        require_once '../app/Config/routes.php';
         $this->routes = $routes;
     }
 
